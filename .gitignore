@@ -1,0 +1,5 @@
+# Ignore instances directory
+instance/
+
+# Ignore migrations directory
+migrations/
