@@ -118,3 +118,73 @@ class UserLogin(Resource):
             "refresh_token": refresh_token,
             "role": user.role
         })
+
+class UserResourcesById(Resource):
+    @jwt_required()
+    def get(self, user_id):
+        user = Users.query.get(user_id)
+        if user:
+            return {
+                "id": user.id,
+                "fullname": user.fullname,
+                "email": user.email,
+                "password": user.password,
+                "role" : user.role
+            }, 200
+        else:
+            return {"error": "User not found"}, 404
+        
+    def patch(self, user_id):
+ 
+        user = Users.query.get(user_id)
+
+        if user:
+            data = request.get_json()
+            fullname = data.get('fullname')
+            email = data.get('email')
+            
+
+            if fullname:
+                user.fullname = fullname
+            if email:
+                user.email = email
+    
+
+            db.session.commit()
+
+            return {'message': 'User updated successfully'}, 200
+        else:
+            return {'message': 'User not found'}, 404
+        
+
+    def update_role(self, user_id):
+        current_user = get_jwt_identity()
+        user = Users.query.get(user_id)
+
+        if user:
+            if 'roles' in current_user and 'super_admin' in current_user['roles']:
+                data = request.get_json()
+                new_role = data.get('role')
+
+                if new_role and new_role in ['normal', 'admin', 'super_admin']:
+                    user.role = new_role
+                    db.session.commit()
+
+                    return {'message': 'User role updated successfully'}, 200
+                else:
+                    return {'error': 'Invalid role'}, 400
+            else:
+                return {'error': 'Unauthorized access'}, 403
+        else:
+            return {'error': f'User with ID {user_id} not found'}, 404
+
+        
+        
+    def delete(self, user_id):
+        user = Users.query.get(user_id)
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+            return {"message": "User deleted successfully"}, 200
+        else:
+            return {"error": "User not found"}, 404
