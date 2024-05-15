@@ -1,5 +1,6 @@
 from flask_restful import Resource
 from Server.Models.users import Users
+from flask_jwt_extended import create_access_token, create_refresh_token, jwt_required, get_jwt_identity,get_current_user,decode_token, JWTManager,get_jwt
 from flask import jsonify,request,make_response
 from datetime import datetime, timedelta
 from flask_jwt_extended import get_current_user
@@ -44,3 +45,45 @@ def user_identity_lookup(user):
 def user_lookup_callback(_jwt_header, jwt_data):
     identity = jwt_data["sub"]
     return Users.query.filter_by(id=identity).one_or_none()
+
+class AddUser(Resource):
+    def post(self):
+        data = request.get_json()
+        
+        if 'fullname' not in data or 'email' not in data or 'password' not in data:
+            return {'message': 'Missing fullname, email, or password'}, 400
+
+        fullname = data.get('fullname')
+        email = data.get('email')
+        password = data.get('password')
+        role = data.get('role', 'normal')
+
+                # Check if user already exists
+        if Users.query.filter_by(email=email).first():
+            return {'message': 'User already exists'}, 400
+
+        try:
+            # Validate the data using User model's validation methods
+            user = Users(fullname=fullname, email=email, password=password, role=role)
+            db.session.add(user)
+            db.session.commit()
+
+            return {'message': 'User added successfully'}, 201
+
+        except AssertionError as e:
+            # Capture validation errors and return as part of the response
+            error_message = str(e)
+            error_details = {}
+
+            if "Email" in error_message:
+                error_details['email'] = error_message
+
+            if "Password" in error_message:
+                error_details['password'] = error_message
+
+            return {'error': error_details}, 400
+
+        except Exception as e:
+            print(f"Error adding user: {e}")
+            db.session.rollback()
+            return {'error': 'Failed to add user.'}, 500

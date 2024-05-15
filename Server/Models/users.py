@@ -64,7 +64,7 @@ class Users(db.Model):
         return self.role == role
 
     def __repr__(self):
-        return f"User(id={self.userID}, username='{self.fullname}',email='{self.email}', role='{self.role}')"
+        return f"User(id={self.id}, username='{self.fullname}',email='{self.email}', role='{self.role}',password='{self.password}')"
 
     
 
