@@ -10,7 +10,7 @@ class Users(db.Model):
     __tablename__ = "users"
     
     #table colums
-    userID = db.Column(db.Integer, primary_key=True, autoincrement=True)
+    id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     fullname = db.Column(db.String(20), unique=False, nullable=False)
     email = db.Column(db.String(70), unique=True, nullable=False)
     password = db.Column(db.String(20), unique=True, nullable=False)
@@ -64,7 +64,7 @@ class Users(db.Model):
         return self.role == role
 
     def __repr__(self):
-        return f"User(id={self.userID}, username='{self.fullname}',email='{self.email}', role='{self.role}')"
+        return f"User(id={self.id}, username='{self.fullname}',email='{self.email}', role='{self.role}',password='{self.password}')"
 
     
 
