@@ -4,6 +4,7 @@ from flask_jwt_extended import create_access_token, create_refresh_token, jwt_re
 from flask import jsonify,request,make_response
 from datetime import datetime, timedelta
 from flask_jwt_extended import get_current_user
+import bcrypt #used to hash passwords
 import jwt
 
 from functools import wraps
@@ -87,3 +88,33 @@ class AddUser(Resource):
             print(f"Error adding user: {e}")
             db.session.rollback()
             return {'error': 'Failed to add user.'}, 500
+
+
+
+class UserLogin(Resource):
+    def post(self):
+        email = request.json.get("email", None)
+        password = request.json.get("password", None)
+
+
+        user = Users.query.filter_by(email=email).one_or_none()
+
+        if not user:
+            return make_response(jsonify({"error": "User not found. Please check your email."}), 404)
+
+        if not bcrypt.checkpw(password.encode('utf-8'), user.password.encode('utf-8')):
+            return make_response(jsonify({"error": "Wrong password"}), 401)
+        
+        fullname = user.fullname
+
+        # Include the role in the response
+        access_token = create_access_token(identity=user, additional_claims={'roles': [user.role]})
+        refresh_token = create_refresh_token(identity=user)
+
+        # Include role, access token, and refresh token in the response
+        return jsonify({
+            "fullname" : fullname,
+            "access_token": access_token,
+            "refresh_token": refresh_token,
+            "role": user.role
+        })
