@@ -4,7 +4,7 @@ class Config():
     DEBUG = True
     TESTING = True
     CSRF_ENABLED = True
-    SECTRET_KEY = "careconnect@dev-inshi"
+    JWT_SECTRET_KEY = "careconnect@dev-inshi"
     
 
 class Development(Config):
