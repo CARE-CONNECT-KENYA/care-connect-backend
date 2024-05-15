@@ -13,7 +13,8 @@ def initialize_models():
     from Server.Models.users import Users
 
 def initalize_views():
-    pass
+    from Server.Views import api_endpoint
+    app.register_blueprint(api_endpoint)
 
 def create_app(config_name):
     app.config.from_object(config_name)
@@ -33,5 +34,7 @@ def create_app(config_name):
     #create database schemas
     with app.app_context():
         initialize_models()
+
+    initalize_views()
 
     return app
