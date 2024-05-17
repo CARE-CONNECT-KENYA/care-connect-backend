@@ -19,6 +19,7 @@ class CountProviders(Resource):
 
 class ViewALLProviders(Resource):
     def get(self):
+        #### turn this to true 
         approvedProviders = Providers.query.filter(Providers.status.in_([False])).order_by(Providers.created_at.desc()).all()
 
         providersList =[{
