@@ -2,6 +2,7 @@ import re
 from flask_restful import Resource,abort,reqparse
 from Server.Models.users import Users
 from Server.Models.providers import Providers
+from datetime import datetime
 from flask import jsonify,request,make_response
 from app import db
 from flask_jwt_extended import jwt_required, get_jwt_identity
@@ -14,29 +15,31 @@ class CountProviders(Resource):
         return {"Providers" : providerCount}, 200
     
 
+
+
 class ViewALLProviders(Resource):
     def get(self):
-        approvedProviders = Providers.query.filter(Providers.status.in_([True])).order_by(Providers.created_at.desc()).all()
+        approvedProviders = Providers.query.filter(Providers.status.in_([False])).order_by(Providers.created_at.desc()).all()
 
         providersList =[{
             "id": provider.providerID,
             "status" : provider.status,
-            "reg_date": provider.created_at,
+            "reg_date": provider.created_at.strftime('%Y-%m-%d %H:%M:%S'),  # Convert datetime to string
             "user_id": provider.user_id,
             "name": provider.providerName,
             "bio": provider.bio,
             "email": provider.email,
             "number": provider.phoneNumber,
             "workingHours": provider.workingHours,
-            "location": provider.Location,
+            "location": provider.location,
             "profileImage": provider.profileImage,
             "website": provider.website,
-            "services": provider.Services,
+            "services": provider.services,
             
         } for provider in approvedProviders ]
 
         return {'providerlist': providersList}, 200
-    
+ 
 
 class AddProvider(Resource):
     @jwt_required()
@@ -98,6 +101,7 @@ class AddProvider(Resource):
                 services=services,
                 user_id=current_user_id
             )
+
             db.session.add(new_provider)
             db.session.commit()
             return {"message": f"{providerName} registered successfully."}, 201
