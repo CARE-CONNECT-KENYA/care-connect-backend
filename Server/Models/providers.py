@@ -20,12 +20,12 @@ class Providers(db.Model):
     providerName= db.Column(db.String(50), unique=True , nullable=False)
     email = db.Column(db.String(70), unique=True, nullable=False)
     phoneNumber = db.Column(db.Integer(), unique=True , nullable=False)
-    workingHours = db.Column(db.Float, nullable=False)
+    workingHours = db.Column(db.String(250), nullable=False)
     profileImage = db.Column(db.String(255), nullable=False)
-    website = db.Column(db.String(255), nullable=False)
+    website = db.Column(db.String(255))
     location = db.Column(db.String(255) , nullable=False)
     providerType = db.Column(db.String , nullable=False)
-    Services = db.Column(db.JSON)
+    services = db.Column(db.JSON)
 
     #relationships 
     user = db.relationship(Users , backref=db.backref('provider' , lazy= True))
@@ -61,14 +61,11 @@ class Providers(db.Model):
             raise ValueError("Phone number must not exceed 15 characters.")
         return phoneNumber
     
+    def __repr__(self):
+        return (f"Providers(id={self.providerID}, name={self.providerName}, status={self.status}, "
+            f"user_id={self.user_id}, time={self.created_at}, bio={self.bio}, email={self.email}, "
+            f"number={self.phoneNumber}, work={self.workingHours}, profilepic={self.profileImage}, "
+            f"website={self.website}, location={self.location}, type={self.providerType}, "
+            f"services={self.services})")
 
-
-
-
-
-    
-
-
-
-    
     
