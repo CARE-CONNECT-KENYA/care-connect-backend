@@ -32,7 +32,7 @@ def create_app(config_name):
 
 
     # when using mysql
-    # app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+mysqlconnector://erick:Erick%40123@localhost/your_db_name' 
+    ###  app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+mysqlconnector://erick:Erick%40123@localhost/your_db_name' 
 
     #initializing the db with app
     db.init_app(app)
