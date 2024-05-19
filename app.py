@@ -15,6 +15,7 @@ jwt = JWTManager()
 def initialize_models():
     from Server.Models.users import Users
     from Server.Models.providers import Providers
+    from Server.Models.reviews import Review
 
 def initalize_views():
     from Server.Views import api_endpoint
