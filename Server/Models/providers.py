@@ -4,6 +4,7 @@ from sqlalchemy.orm import validates
 from urllib.parse import urlparse
 from Server.Models.users import Users
 from Server.Models.reviews import Review
+from Server.Models.facilities import Facilities
 
 import re
 from app import db
@@ -30,7 +31,8 @@ class Providers(db.Model):
 
     #relationships 
     user = db.relationship(Users , backref=db.backref('provider' , lazy= True))
-    reviews = db.relationship(Review, backref='ngo', lazy=True)
+    reviews = db.relationship(Review, backref='provider', lazy=True)
+    facilities = db.relationship(Facilities, backref='facility' , lazy=True)
 
 
     @validates('email')
