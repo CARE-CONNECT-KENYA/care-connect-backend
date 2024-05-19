@@ -2,6 +2,7 @@ from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from sqlalchemy.orm import validates
 from Server.Models.reviews import Review
+from Server.Models.UserInfo import AdditionalUserInfo
 from app import db
 import re #used for validation
 import bcrypt #used to hash passwords

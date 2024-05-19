@@ -16,6 +16,7 @@ def initialize_models():
     from Server.Models.users import Users
     from Server.Models.providers import Providers
     from Server.Models.reviews import Review
+    from Server.Models.facilities import Facilities
 
 def initalize_views():
     from Server.Views import api_endpoint
