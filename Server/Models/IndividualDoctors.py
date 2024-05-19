@@ -20,5 +20,6 @@ class IndividualDoctors(db.Model):
     #foreign key
     providerID = db.Column(db.Integer, db.ForeignKey('providers.providerID'), nullable=True)
 
+
     def __repr__(self):
         return f"Doctors(id={self.id},Gender={self.Gender},sepcialty={self.specialties},language={self.LanguagesSpoken},codnitions={self.conditionsTreated},procedure={self.Procedureperformed},insurance={self.insurance})"
