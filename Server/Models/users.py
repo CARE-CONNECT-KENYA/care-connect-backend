@@ -1,6 +1,7 @@
 from flask_sqlalchemy import SQLAlchemy
 from sqlalchemy import func
 from sqlalchemy.orm import validates
+from Server.Models.reviews import Review
 from app import db
 import re #used for validation
 import bcrypt #used to hash passwords
@@ -16,6 +17,9 @@ class Users(db.Model):
     password = db.Column(db.String(20), unique=True, nullable=False)
     created_at = db.Column(db.DateTime, server_default=db.func.now())
     role = db.Column(db.String, nullable=False, default='normal')
+
+    #ralationships 
+    reviews = db.relationship(Review, backref='user', lazy=True)
 
     # Data validation
     @validates('email')
