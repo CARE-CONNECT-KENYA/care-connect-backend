@@ -25,7 +25,7 @@ class AddReviews(Resource):
         
 
         
-        providerID = kwargs.get('providersID')
+        providerID = kwargs.get('providerID')
 
         provider = Providers.query.get(providerID)
         if not provider:
@@ -48,10 +48,28 @@ class AddReviews(Resource):
              
 
 class GetReviewsForProvider(Resource):
-    pass
+    @jwt_required()
+    def get(self, providerID):
+
+        provider = Providers.query.get(providerID)
+        if not provider:
+            return {'message': 'Provider does not exist'}, 404
+        
+        reviews = Review.query.filter_by(providerID=providerID).all()
+        
+        reviews_list=[{
+            "id": review.id,
+            "rating": review.rating,
+            "text":review.text,
+            "providerID": review.providerID
+        } for review in reviews]
+
+        return {f"Revies for provider": reviews_list}
 
 class GetAllReviews(Resource):
     pass
+        
+
 
 class CalculateAvargeRatingForProvider(Resource):
     def get(self,providerID):

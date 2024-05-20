@@ -15,7 +15,7 @@ class Review(db.Model):
 
     #Foreign keys column
     user_id = db.Column(db.Integer, db.ForeignKey('users.id'), nullable=False)
-    providersID = db.Column(db.Integer, db.ForeignKey('providers.providerID'), nullable=True)
+    providerID = db.Column(db.Integer, db.ForeignKey('providers.providerID'), nullable=True)
 
     def __repr__(self):
         return f"Review(id={self.id}, rating={self.rating}, text='{self.text}')"
