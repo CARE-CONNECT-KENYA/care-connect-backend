@@ -37,7 +37,7 @@ class AddReviews(Resource):
             rating=args['rating'],
             text=args.get('text'),  
             user_id=current_user_id,
-            providersID=providerID  
+            providerID=providerID  
         )
 
         # Add the review to the database
@@ -64,11 +64,23 @@ class GetReviewsForProvider(Resource):
             "providerID": review.providerID
         } for review in reviews]
 
-        return {f"Revies for provider": reviews_list}
+        return {f"Revies for provider {providerID}": reviews_list}
 
 class GetAllReviews(Resource):
-    pass
+    @jwt_required()
+    def get(self):
         
+        reviews = Review.query.all()
+
+        reviews_list=[{
+            "id": review.id,
+            "rating": review.rating,
+            "text":review.text,
+            "providerID": review.providerID,
+            "user ID": review.user_id
+        } for review in reviews]
+
+        return {"All reviews": reviews_list}, 200
 
 
 class CalculateAvargeRatingForProvider(Resource):
