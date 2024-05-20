@@ -27,6 +27,7 @@ def create_app(config_name):
 
     app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///app.db'
     app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 86000
 
     #jwt configurations
     app.config['JWT_SECRET_KEY'] = 'careconnect@dev-inshi'
