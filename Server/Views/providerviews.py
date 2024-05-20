@@ -70,6 +70,10 @@ class AddProvider(Resource):
             website = data.get('website')
             location = data.get('location')
             providerType = data.get('providerType')
+
+            if providerType.lower() not in ["Facility", "Doctor"]:
+                return {"error": "Category can be either 'Doctor' or 'Facility"}, 400
+
             services = data.get('services')
 
             # Ensure services is a list

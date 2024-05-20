@@ -6,6 +6,7 @@ api_endpoint = Blueprint
 from Server.Views.userview import CountUsers, AddUser,UserLogin,UserResourcesById
 from Server.Views.providerviews import CountProviders, ViewALLProviders,AddProvider
 from Server.Views.reviews import AddReviews,GetReviewsForProvider,GetAllReviews
+from Server.Views.individualdoctorviews import AddIndividualDoctor
 
 api_endpoint= Blueprint('auth',__name__,url_prefix='/care')
 api = Api(api_endpoint)
@@ -23,3 +24,5 @@ api.add_resource(AddProvider,'/newprovider')
 api.add_resource(AddReviews, '/newreview/<int:providerID>')
 api.add_resource(GetReviewsForProvider, '/reviews/<int:providerID>')
 api.add_resource(GetAllReviews, '/allreviews')
+
+api.add_resource(AddIndividualDoctor, '/individualprovider')
