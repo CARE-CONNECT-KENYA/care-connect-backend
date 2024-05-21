@@ -23,11 +23,11 @@ class AddFacilities(Resource):
                 return {"error": "Provider not found for the current user."}, 404
 
             provider_id = provider.providerID
+            providerType = provider.providerType
 
-            # Check if provider ID already exists
-            existing_doctor = IndividualDoctors.query.filter_by(providerID=provider_id).first()
-            if existing_doctor:
-                return {"error": "Individual doctor with the provider ID has existing details"}, 400
+            # Check if the provider type is "Facility"
+            if providerType != "Facility":
+                return {"error": "Provider type must be a Facility."}, 400
 
             # Check if user ID has facility
             existing_facility = Facilities.query.filter_by(providerID=provider_id).first()

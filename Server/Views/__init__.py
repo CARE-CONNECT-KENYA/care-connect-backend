@@ -8,6 +8,7 @@ from Server.Views.providerviews import CountProviders, ViewALLProviders,AddProvi
 from Server.Views.reviews import AddReviews,GetReviewsForProvider,GetAllReviews
 from Server.Views.individualdoctorviews import AddIndividualDoctor, GetIndividualDoctorDetails
 from Server.Views.facilityviews import AddFacilities,GetFacilityForProvider
+from Server.Views.getproviderviews import GetProviders
 
 api_endpoint= Blueprint('auth',__name__,url_prefix='/care')
 api = Api(api_endpoint)
@@ -31,3 +32,5 @@ api.add_resource(GetIndividualDoctorDetails,'/doctor/<int:providerID>')
 
 api.add_resource(AddFacilities,'/newfacility')
 api.add_resource(GetFacilityForProvider,'/facility/<int:providerID>')
+
+api.add_resource(GetProviders, '/allproviders')
