@@ -49,8 +49,6 @@ class AddProvider(Resource):
             data = request.json
             current_user_id = get_jwt_identity() # Make sure user is logged in
 
-            print(f"Current user: {current_user_id}")
-
             existing_user = Providers.query.filter_by(user_id=current_user_id).first()
             if existing_user:
                 return {"message": "User already has a registered Provider"}, 400
@@ -71,8 +69,8 @@ class AddProvider(Resource):
             location = data.get('location')
             providerType = data.get('providerType')
 
-            if providerType.lower() not in ["Facility", "Doctor"]:
-                return {"error": "Category can be either 'Doctor' or 'Facility"}, 400
+            if providerType not in ["Facility", "Doctor"]:
+                return {"error": "Provider type can be either 'Doctor' or 'Facility"}, 400
 
             services = data.get('services')
 

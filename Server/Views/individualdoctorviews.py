@@ -64,7 +64,6 @@ class GetIndividualDoctorDetails(Resource):
     @jwt_required()
 
     def get(self, providerID):
-        
         provider = Providers.query.get(providerID)
         if not provider:
             return {"message": f"Provider {providerID} does not exist"}, 404

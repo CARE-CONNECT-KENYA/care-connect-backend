@@ -15,15 +15,17 @@ class Facilities(db.Model):
     specialties = db.Column(db.JSON)
     ## you can add other filds here 
     
-
     #foreing keys
     providerID = db.Column(db.Integer, db.ForeignKey('providers.providerID'), nullable=True)
 
+    
     @validates('facilityphotos')
-    def validate_url(self, key, facilityphotos):
-        parsed_url = urlparse(facilityphotos)
-        if not all([parsed_url.scheme, parsed_url.netloc]):
-            raise AssertionError("Invalid URL. Please provide a valid URL with a scheme (e.g., http, https) and netloc.")
+    def validate_urls(self, key, facilityphotos):
+        if isinstance(facilityphotos, list):
+            for url in facilityphotos:
+                parsed_url = urlparse(url)
+                if not all([parsed_url.scheme, parsed_url.netloc]):
+                    raise AssertionError(f"Invalid URL: {url}. Please provide a valid URL with a scheme (e.g., http, https) and netloc.")
         return facilityphotos
 
     def __repr__(self):

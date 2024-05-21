@@ -3,3 +3,5 @@ instance/
 
 # Ignore migrations directory
 migrations/
+#ignore tests
+test/
