@@ -59,3 +59,32 @@ class AddIndividualDoctor(Resource):
         except Exception as e:
             db.session.rollback()
             return {"error": str(e)}, 500
+        
+class GetIndividualDoctorDetails(Resource):
+    @jwt_required()
+
+    def get(self, providerID):
+        
+        provider = Providers.query.get(providerID)
+        if not provider:
+            return {"message": f"Provider {providerID} does not exist"}, 404
+
+        doctors = IndividualDoctors.query.filter_by(providerID=providerID).all()
+
+        doctors_list = [{
+            "id": doctor.id,
+            "gender": doctor.Gender,
+            "specialties": doctor.specialties,
+            "languagesSpoken": doctor.LanguagesSpoken,
+            "conditionsTreated": doctor.conditionsTreated,
+            "procedurePerformed": doctor.Procedureperformed,
+            "insurance": doctor.insurance,
+            "providerId": doctor.providerID
+        } for doctor in doctors]
+
+        return {"doctor_info": doctors_list}, 200
+
+
+
+
+
