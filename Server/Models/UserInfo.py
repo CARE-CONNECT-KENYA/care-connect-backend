@@ -11,6 +11,8 @@ class AdditionalUserInfo(db.Model):
     location  = db.Column(db.String(255) )
     conditions = db.Column(db.JSON)
     insuranceUse = db.Column(db.JSON)
+    userType = db.Column(db.String(10))
+
     #foreign Key
     user_id = db.Column(db.Integer, db.ForeignKey("users.id") , nullable=False)
 
