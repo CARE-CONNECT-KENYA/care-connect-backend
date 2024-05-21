@@ -62,7 +62,6 @@ class AddIndividualDoctor(Resource):
         
 class GetIndividualDoctorDetails(Resource):
     @jwt_required()
-
     def get(self, providerID):
         provider = Providers.query.get(providerID)
         if not provider:

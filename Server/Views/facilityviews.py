@@ -49,3 +49,24 @@ class AddFacilities(Resource):
         except Exception as e:
             db.session.rollback()
             return {"error": str(e)}, 500
+
+
+class GetFacilityForProvider(Resource):
+
+    @jwt_required()
+    def get(self, providerID):
+        provider = Providers.query.get(providerID)
+        if not provider:
+            return {"message": f"Provider {providerID} does not exist"}, 404
+        
+        facilities = Facilities.query.filter_by(providerID=providerID).all()
+
+        facility_list =[{
+            "id": facility.facilityId,
+            "facilityphotos": facility.facilityphotos,
+            "insurance":facility.insurance,
+            "specialties":facility.specialties
+
+        } for facility in facilities]
+
+        return {"facility": facility_list}, 200
