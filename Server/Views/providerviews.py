@@ -18,9 +18,10 @@ class CountProviders(Resource):
 
 
 class ViewALLProviders(Resource):
+    @jwt_required
     def get(self):
-        #### turn this to true 
-        approvedProviders = Providers.query.filter(Providers.status.in_([False])).order_by(Providers.created_at.desc()).all()
+
+        approvedProviders = Providers.query.filter(Providers.status.in_([True])).order_by(Providers.created_at.desc()).all()
 
         providersList =[{
             "id": provider.providerID,
@@ -114,3 +115,7 @@ class AddProvider(Resource):
             db.session.rollback()
             print(f"Error: {str(e)}")
             return make_response(jsonify({"Error": f"Error while registering provider: {str(e)}"}), 500)
+
+
+class ProviderResource(Resource):
+    pass #should contain delete get and patch for single user endpoint
