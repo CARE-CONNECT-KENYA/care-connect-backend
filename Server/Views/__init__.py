@@ -11,7 +11,7 @@ from Server.Views.facilityviews import AddFacilities,GetFacilityForProvider
 from Server.Views.getproviderviews import GetProviders
 from Server.Views.additionaluserinfo import AdditionalUserInfoResource,USerInfo
 from Server.Views.providersdashbord import SpecificUserProvider
-from Server.Views.superAdmin import UsersList,UpdateUserrole,ProvidersList,UnpublishedProviders
+from Server.Views.superAdmin import UsersList,UpdateUserrole,ProvidersList,UnpublishedProviders,ApproveProvider
 
 api_endpoint= Blueprint('auth',__name__,url_prefix='/care')
 api = Api(api_endpoint)
@@ -47,6 +47,6 @@ api.add_resource(UsersList, '/super-admin')
 api.add_resource(UpdateUserrole, '/user/<int:user_id>')
 api.add_resource(ProvidersList, '/super-admin-allproviders')
 api.add_resource(UnpublishedProviders, '/super-admin-unapproved')
-
+api.add_resource(ApproveProvider, '/approve_provider/<int:providerID>')
 
 

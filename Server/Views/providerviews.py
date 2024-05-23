@@ -117,5 +117,3 @@ class AddProvider(Resource):
             return make_response(jsonify({"Error": f"Error while registering provider: {str(e)}"}), 500)
 
 
-class ProviderResource(Resource):
-    pass #should contain delete get and patch for single user endpoint

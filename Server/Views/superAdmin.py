@@ -113,6 +113,46 @@ class UnpublishedProviders(Resource):
         } for provider in providers]
         
         return make_response(jsonify(notApprovedProviders), 200)
+    
+class ApproveProvider(Resource):
+    @jwt_required()
+    @check_role('super_admin')
+    def put(self, providerID):
+        # Get the request data
+        data = request.get_json()
+        new_status = data.get('status')
+
+        # Find the provider with the given providerID
+        provider = Providers.query.filter_by(providerID=providerID).first()
+
+        if not provider:
+            return make_response(jsonify({"message": "Provider not found"}), 404 )
+
+        # Update the provider's status based on the new status
+        provider.status = new_status
+
+        # Find the user associated with this provider
+        user = Users.query.get(provider.user_id)
+
+        if not user:
+            return make_response(jsonify({"message": "User associated with the provider not found"}), 404)
+
+        # Update the user's role based on the provider's new status
+        if new_status:
+            user.role = 'admin'
+        else:
+            user.role = 'user'
+
+        try:
+            # Commit the changes to the database
+            db.session.commit()
+            return make_response(jsonify({"message": "Provider status and user role updated successfully"}), 200 )
+        except Exception as e:
+            # Rollback in case of error
+            db.session.rollback()
+            return make_response(jsonify({"message": "An error occurred", "error": str(e)}), 500 )
+
+
 
 
 
