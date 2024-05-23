@@ -76,12 +76,6 @@ class USerInfo(Resource):
 
         
 
-
-
-
-    
-
-
     @jwt_required()
     def delete(self,user_id):
         # Get the current user's identity

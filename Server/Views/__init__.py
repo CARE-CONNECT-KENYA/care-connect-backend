@@ -9,7 +9,7 @@ from Server.Views.reviews import AddReviews,GetReviewsForProvider,GetAllReviews
 from Server.Views.individualdoctorviews import AddIndividualDoctor, GetIndividualDoctorDetails
 from Server.Views.facilityviews import AddFacilities,GetFacilityForProvider
 from Server.Views.getproviderviews import GetProviders
-from Server.Views.additionaluserinfo import AdditionalUserInfoResource,USerInfo
+from Server.Views.additionaluserinfo import AdditionalUserInfoResource,UserInfo
 from Server.Views.providersdashbord import SpecificUserProvider
 from Server.Views.superAdmin import UsersList,UpdateUserrole,ProvidersList,UnpublishedProviders,ApproveProvider
 
@@ -39,7 +39,7 @@ api.add_resource(GetFacilityForProvider,'/facility/<int:providerID>')
 api.add_resource(GetProviders, '/allproviders')
 
 api.add_resource(AdditionalUserInfoResource, '/newuserinfo')
-api.add_resource(USerInfo, '/userinfo/<int:id>')
+api.add_resource(UserInfo, '/userinfo/<int:id>')
 
 api.add_resource(SpecificUserProvider, '/admin')
 
