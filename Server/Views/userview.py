@@ -155,30 +155,7 @@ class UserResourcesById(Resource):
             return {'message': 'User updated successfully'}, 200
         else:
             return {'message': 'User not found'}, 404
-        
-
-    def update_role(self, user_id):
-        current_user = get_jwt_identity()
-        user = Users.query.get(user_id)
-
-        if user:
-            if 'roles' in current_user and 'super_admin' in current_user['roles']:
-                data = request.get_json()
-                new_role = data.get('role')
-
-                if new_role and new_role in ['normal', 'admin', 'super_admin']:
-                    user.role = new_role
-                    db.session.commit()
-
-                    return {'message': 'User role updated successfully'}, 200
-                else:
-                    return {'error': 'Invalid role'}, 400
-            else:
-                return {'error': 'Unauthorized access'}, 403
-        else:
-            return {'error': f'User with ID {user_id} not found'}, 404
-
-        
+    
         
     def delete(self, user_id):
         user = Users.query.get(user_id)
