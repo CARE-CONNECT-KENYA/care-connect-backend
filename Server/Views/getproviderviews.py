@@ -17,20 +17,17 @@ class GetProviders(Resource):
         # Retrieve the current user's additional information
         additional_info = AdditionalUserInfo.query.filter_by(user_id=current_user_id).first()
 
-        # Define the query
+        # Define the base query
         query = Providers.query
 
-        if additional_info:
-            if additional_info.location:
-                query = query.filter_by(location=additional_info.location)
-            elif additional_info.conditions:
-                # Prioritize providers by conditions matching their services
-                conditions = additional_info.conditions
-                query = query.filter(
-                    or_(*[Providers.services.contains(condition) for condition in conditions])
-                )
+        if additional_info and additional_info.conditions:
+            # Prioritize providers by conditions matching their services
+            conditions = additional_info.conditions
+            query = query.filter(
+                or_(*[Providers.services.contains(condition) for condition in conditions])
+            )
 
-        # If no providers matched the location or conditions, order by the latest created
+        # Order by the latest created if no providers match the conditions
         providers = query.order_by(Providers.created_at.desc()).all()
 
         # Convert the result to a JSON serializable format
@@ -44,9 +41,7 @@ class GetProviders(Resource):
                 'email': provider.email,
                 'bio': provider.bio,
                 'phonenumber': provider.phoneNumber,
-
             }
-            
             for provider in providers
         ]
 
