@@ -18,7 +18,7 @@ class GetProviders(Resource):
         additional_info = AdditionalUserInfo.query.filter_by(user_id=current_user_id).first()
 
         # Define the base query
-        query = Providers.query
+        query = Providers.query.filter_by(status=True)
 
         if additional_info and additional_info.conditions:
             # Prioritize providers by conditions matching their services
