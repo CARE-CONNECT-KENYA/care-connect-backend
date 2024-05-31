@@ -40,7 +40,7 @@ class ViewALLProviders(Resource):
             
         } for provider in approvedProviders ]
 
-        return {'providerlist': providersList}, 200
+        return make_response(jsonify({'providerlist': providersList}, 200))
  
 
 class AddProvider(Resource):
@@ -116,4 +116,32 @@ class AddProvider(Resource):
             print(f"Error: {str(e)}")
             return make_response(jsonify({"Error": f"Error while registering provider: {str(e)}"}), 500)
 
+class GetSingleProvider(Resource):
+    @jwt_required()
+    def get(self,providerID):
 
+        provider = Providers.query.get(providerID)
+
+        if provider:
+            return{
+            "id": provider.providerID,
+            "status" : provider.status,
+            "reg_date": provider.created_at.strftime('%Y-%m-%d %H:%M:%S'),  # Convert datetime to string
+            "user_id": provider.user_id,
+            "name": provider.providerName,
+            "bio": provider.bio,
+            "email": provider.email,
+            "number": provider.phoneNumber,
+            "workingHours": provider.workingHours,
+            "location": provider.location,
+            "profileImage": provider.profileImage,
+            "website": provider.website,
+            "services": provider.services,
+            } ,200
+        else:
+            return{"error": "provider not found"}, 404
+
+
+        
+
+        
