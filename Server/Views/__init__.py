@@ -23,7 +23,7 @@ api.add_resource(UserLogin,'/login')
 api.add_resource(UserResourcesById, '/users/<int:user_id>')
 
 api.add_resource(CountProviders, '/totalproviders')
-api.add_resource(ViewALLProviders, '/providers') ## not working fix
+api.add_resource(ViewALLProviders, '/providers') 
 api.add_resource(AddProvider,'/newprovider')
 api.add_resource(GetSingleProvider,'/provider/<int:providerID>')
 #missing endpoint get single provider
@@ -38,7 +38,7 @@ api.add_resource(GetIndividualDoctorDetails,'/doctor/<int:providerID>')
 api.add_resource(AddFacilities,'/newfacility')
 api.add_resource(GetFacilityForProvider,'/facility/<int:providerID>')
 
-api.add_resource(GetProviders, '/allproviders')
+api.add_resource(GetProviders, '/foryoupage')
 
 api.add_resource(AdditionalUserInfoResource, '/newuserinfo')
 api.add_resource(USerInfo, '/userinfo/<int:id>')
