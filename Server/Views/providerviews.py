@@ -14,18 +14,14 @@ class CountProviders(Resource):
         providerCount = Providers.query.count()
         return {"Providers" : providerCount}, 200
     
-
-
-
 class ViewALLProviders(Resource):
-    @jwt_required
+    @jwt_required()
     def get(self):
-
         approvedProviders = Providers.query.filter(Providers.status.in_([True])).order_by(Providers.created_at.desc()).all()
 
-        providersList =[{
+        providersList = [{
             "id": provider.providerID,
-            "status" : provider.status,
+            "status": provider.status,
             "reg_date": provider.created_at.strftime('%Y-%m-%d %H:%M:%S'),  # Convert datetime to string
             "user_id": provider.user_id,
             "name": provider.providerName,
@@ -37,10 +33,9 @@ class ViewALLProviders(Resource):
             "profileImage": provider.profileImage,
             "website": provider.website,
             "services": provider.services,
-            
-        } for provider in approvedProviders ]
+        } for provider in approvedProviders]
 
-        return make_response(jsonify({'providerlist': providersList}, 200))
+        return make_response(jsonify({'providerlist': providersList}), 200)
  
 
 class AddProvider(Resource):
