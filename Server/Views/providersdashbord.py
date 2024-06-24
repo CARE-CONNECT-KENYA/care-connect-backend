@@ -96,3 +96,29 @@ class SpecificUserProvider(Resource):
         
         except Exception as e:
             return {"message": f"Error deleting provider details: {str(e)}"}, 500
+
+# Not tested but should allow users to add a new admin
+class GrantAdminAccess(Resource):
+    @jwt_required()
+    @check_role('admin')
+    def post(self):
+        try:
+            data = request.get_json()
+            user_ids = data.get('user_ids', [])
+
+            if not user_ids:
+                return make_response(jsonify({"error": "No user IDs provided"}), 400)
+
+            for user_id in user_ids:
+                user = Users.query.get(user_id)
+                if user:
+                    user.role = 'admin'
+                else:
+                    return make_response(jsonify({"error": f"User with ID {user_id} not found"}), 404)
+
+            db.session.commit()
+
+            return make_response(jsonify({"message": "Users successfully promoted to admin"}), 200)
+
+        except Exception as e:
+            return make_response(jsonify({"error": f"An error occurred: {str(e)}"}), 500)
