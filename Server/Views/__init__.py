@@ -45,10 +45,10 @@ api.add_resource(USerInfo, '/userinfo/<int:id>')
 
 api.add_resource(SpecificUserProvider, '/admin')
 
-api.add_resource(UsersList, '/super-admin')
-api.add_resource(UpdateUserrole, '/user/<int:user_id>')
-api.add_resource(ProvidersList, '/super-admin-allproviders')
-api.add_resource(UnpublishedProviders, '/super-admin-unapproved')
-api.add_resource(ApproveProvider, '/approve_provider/<int:providerID>')
+api.add_resource(UsersList, '/superadmin/users')
+api.add_resource(UpdateUserrole, '/superadmin/user/<int:user_id>')
+api.add_resource(ProvidersList, '/superadmin/providers')
+api.add_resource(UnpublishedProviders, '/superadmin/providers/unapproved')
+api.add_resource(ApproveProvider, '/superadmin/aproveprovider/<int:providerID>')
 
 
