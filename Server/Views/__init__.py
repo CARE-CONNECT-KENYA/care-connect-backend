@@ -10,7 +10,7 @@ from Server.Views.individualdoctorviews import AddIndividualDoctor, GetIndividua
 from Server.Views.facilityviews import AddFacilities,GetFacilityForProvider
 from Server.Views.getproviderviews import GetProviders
 from Server.Views.additionaluserinfo import AdditionalUserInfoResource,USerInfo
-from Server.Views.providersdashbord import SpecificUserProvider
+from Server.Views.providersdashbord import SpecificUserProvider,GrantAdminAccess
 from Server.Views.superAdmin import UsersList,UpdateUserrole,ProvidersList,UnpublishedProviders,ApproveProvider
 
 api_endpoint= Blueprint('auth',__name__,url_prefix='/care')
@@ -23,7 +23,7 @@ api.add_resource(UserLogin,'/login')
 api.add_resource(UserResourcesById, '/users/<int:user_id>')
 
 api.add_resource(CountProviders, '/totalproviders')
-api.add_resource(ViewALLProviders, '/providers') ## not working fix
+api.add_resource(ViewALLProviders, '/providers') 
 api.add_resource(AddProvider,'/newprovider')
 api.add_resource(GetSingleProvider,'/provider/<int:providerID>')
 #missing endpoint get single provider
@@ -38,7 +38,7 @@ api.add_resource(GetIndividualDoctorDetails,'/doctor/<int:providerID>')
 api.add_resource(AddFacilities,'/newfacility')
 api.add_resource(GetFacilityForProvider,'/facility/<int:providerID>')
 
-api.add_resource(GetProviders, '/allproviders')
+api.add_resource(GetProviders, '/foryoupage')
 
 api.add_resource(AdditionalUserInfoResource, '/newuserinfo')
 api.add_resource(USerInfo, '/userinfo/<int:id>')
@@ -50,5 +50,6 @@ api.add_resource(UpdateUserrole, '/superadmin/user/<int:user_id>')
 api.add_resource(ProvidersList, '/superadmin/providers')
 api.add_resource(UnpublishedProviders, '/superadmin/providers/unapproved')
 api.add_resource(ApproveProvider, '/superadmin/aproveprovider/<int:providerID>')
+api.add_resource(GrantAdminAccess, '/grant-admin-access')
 
 

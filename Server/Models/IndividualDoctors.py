@@ -10,7 +10,7 @@ class IndividualDoctors(db.Model):
     __tablename__='individualDoctors'
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
-    Gender = db.Column(db.String(7), nullable=False)
+    Gender = db.Column(db.String(), nullable=False , unique=False)
     specialties = db.Column(db.JSON)
     LanguagesSpoken= db.Column(db.JSON)
     conditionsTreated = db.Column(db.JSON)
