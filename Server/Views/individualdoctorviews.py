@@ -16,7 +16,7 @@ class AddIndividualDoctor(Resource):
             data = request.json
             gender = data.get('Gender')
 
-            if gender.lower() not in ["male", "female"]:
+            if gender.lower() not in ["male", "female",]:
                 return {"error": "Gender must be either 'Male' or 'Female'."}, 400
             
             specialties = data.get('specialties')
@@ -37,7 +37,7 @@ class AddIndividualDoctor(Resource):
 
             # Check if the provider type is "Facility"
             if providerType != "Doctor":
-                return {"error": "Provider type must be a Facility."}, 400
+                return {"error": "Provider type must be a Doctor."}, 400
 
             # Check if provider ID already exists
             existing_doctor = IndividualDoctors.query.filter_by(providerID=provider_id).first()

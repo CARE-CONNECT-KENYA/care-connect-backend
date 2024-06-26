@@ -103,7 +103,12 @@ class AddProvider(Resource):
 
             db.session.add(new_provider)
             db.session.commit()
-            return {"message": f"{providerName} registered successfully."}, 201
+            
+            # Return response with providerID
+            return {
+                "message": f"{providerName} registered successfully.",
+                "providerID": new_provider.providerID  # Assuming providerID is the actual attribute name in Providers model
+            }, 201
             
 
         except Exception as e:
@@ -135,6 +140,19 @@ class GetSingleProvider(Resource):
             } ,200
         else:
             return{"error": "provider not found"}, 404
+        
+    @jwt_required()
+    def delete(self, providerID):
+        provider = Providers.query.get(providerID)
+        if not provider:
+            return {"error": "provider not found"}, 404
+
+        db.session.delete(provider)
+        db.session.commit()
+        
+        return {"message": f"Provider {providerID} deleted successfully"}, 200
+        
+        
 
 
         
