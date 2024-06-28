@@ -33,6 +33,7 @@ class ViewALLProviders(Resource):
             "profileImage": provider.profileImage,
             "website": provider.website,
             "services": provider.services,
+            "providerType":provider.providerType,
         } for provider in approvedProviders]
 
         return make_response(jsonify({'providerlist': providersList}), 200)
