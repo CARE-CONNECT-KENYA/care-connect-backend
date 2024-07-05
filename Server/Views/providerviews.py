@@ -138,6 +138,7 @@ class GetSingleProvider(Resource):
             "profileImage": provider.profileImage,
             "website": provider.website,
             "services": provider.services,
+            "providerType":provider.providerType
             } ,200
         else:
             return{"error": "provider not found"}, 404

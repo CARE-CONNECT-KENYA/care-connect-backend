@@ -64,7 +64,7 @@ class GetReviewsForProvider(Resource):
             "providerID": review.providerID
         } for review in reviews]
 
-        return {f"Revies for provider {providerID}": reviews_list}
+        return {"reviews": reviews_list}, 200
 
 class GetAllReviews(Resource):
     @jwt_required()
