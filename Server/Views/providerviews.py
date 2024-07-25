@@ -1,11 +1,12 @@
 import re
 from flask_restful import Resource,abort,reqparse
 from Server.Models.users import Users
-from Server.Models.providers import Providers
+from Server.Models.providers import Providers,Review
 from datetime import datetime
 from flask import jsonify,request,make_response
 from app import db
 from flask_jwt_extended import jwt_required, get_jwt_identity
+from sqlalchemy.sql import func
 
 
 #count tester
@@ -17,12 +18,27 @@ class CountProviders(Resource):
 class ViewALLProviders(Resource):
     @jwt_required()
     def get(self):
+        # Query to get approved providers
         approvedProviders = Providers.query.filter(Providers.status.in_([True])).order_by(Providers.created_at.desc()).all()
+        
+        # Initialize a dictionary to store provider ratings
+        provider_ratings = {}
 
+        # Query to calculate average rating for each provider
+        ratings = db.session.query(
+            Review.providerID,
+            func.avg(Review.rating).label('average_rating')
+        ).group_by(Review.providerID).all()
+
+        # Store ratings in a dictionary
+        for rating in ratings:
+            provider_ratings[rating.providerID] = rating.average_rating
+
+        # Construct the providers list with the additional rating
         providersList = [{
             "id": provider.providerID,
             "status": provider.status,
-            "reg_date": provider.created_at.strftime('%Y-%m-%d %H:%M:%S'),  # Convert datetime to string
+            "reg_date": provider.created_at.strftime('%Y-%m-%d %H:%M:%S'),
             "user_id": provider.user_id,
             "name": provider.providerName,
             "bio": provider.bio,
@@ -33,6 +49,8 @@ class ViewALLProviders(Resource):
             "profileImage": provider.profileImage,
             "website": provider.website,
             "services": provider.services,
+            "providerType": provider.providerType,
+            "rating": provider_ratings.get(provider.providerID, None)  # Add the rating here
         } for provider in approvedProviders]
 
         return make_response(jsonify({'providerlist': providersList}), 200)
@@ -137,6 +155,7 @@ class GetSingleProvider(Resource):
             "profileImage": provider.profileImage,
             "website": provider.website,
             "services": provider.services,
+            "providerType":provider.providerType
             } ,200
         else:
             return{"error": "provider not found"}, 404
