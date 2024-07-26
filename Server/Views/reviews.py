@@ -61,7 +61,8 @@ class GetReviewsForProvider(Resource):
             "id": review.id,
             "rating": review.rating,
             "text":review.text,
-            "providerID": review.providerID
+            "providerID": review.providerID,
+            "user": review.user.fullname
         } for review in reviews]
 
         return {"reviews": reviews_list}, 200
