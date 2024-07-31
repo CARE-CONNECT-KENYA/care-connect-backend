@@ -3,7 +3,7 @@ from flask_restful import Api
 
 api_endpoint = Blueprint
 
-from Server.Views.userview import CountUsers, AddUser,UserLogin,UserResourcesById
+from Server.Views.userview import CountUsers, AddUser,UserLogin,UserResourcesById,SendEmail
 from Server.Views.providerviews import CountProviders, ViewALLProviders,AddProvider,GetSingleProvider
 from Server.Views.reviews import AddReviews,GetReviewsForProvider,GetAllReviews
 from Server.Views.individualdoctorviews import AddIndividualDoctor, GetIndividualDoctorDetails
@@ -21,6 +21,7 @@ api.add_resource(CountUsers, '/countusers')
 api.add_resource(AddUser, '/addusers')
 api.add_resource(UserLogin,'/login')
 api.add_resource(UserResourcesById, '/users/<int:user_id>')
+api.add_resource(SendEmail, '/send')
 
 api.add_resource(CountProviders, '/totalproviders')
 api.add_resource(ViewALLProviders, '/providers') 
