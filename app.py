@@ -1,13 +1,25 @@
 import os
-from flask import Flask
+from flask import Flask,jsonify
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
 from  flask_cors import CORS
 from flask_jwt_extended import JWTManager
+from flask_mail import Mail, Message
 
 
 
 app = Flask(__name__)
+
+app.config['MAIL_SERVER'] = 'smtp.gmail.com'
+app.config['MAIL_PORT'] = 465
+app.config['MAIL_USERNAME'] = 'careconnect621@gmail.com'
+app.config['MAIL_PASSWORD'] = 'uqbv mjgp vfgk wyww'
+app.config['MAIL_USE_SSL'] = True
+app.config['MAIL_USE_TLS'] = False
+app.config['MAIL_DEFAULT_SENDER'] = 'careconnect621@gmail.com'
+mail = Mail(app)
+
+
 CORS(app)
 db = SQLAlchemy()
 jwt = JWTManager()
@@ -50,3 +62,6 @@ def create_app(config_name):
     initalize_views()
 
     return app
+
+
+

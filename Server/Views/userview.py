@@ -6,12 +6,13 @@ from datetime import datetime, timedelta
 from flask_jwt_extended import get_current_user
 import bcrypt #used to hash passwords
 import jwt
+from flask_mail import Mail, Message
 
 from functools import wraps
 import json
 
 
-from app import db,jwt 
+from app import db,jwt,mail
 
 
 
@@ -165,3 +166,26 @@ class UserResourcesById(Resource):
             return {"message": "User deleted successfully"}, 200
         else:
             return {"error": "User not found"}, 404
+        
+
+class SendEmail(Resource):
+    def post(self):
+        try:
+            # Hardcoded values
+            subject = "Test"
+            body = "This is a test email."
+            recipient = "erickkirui653@gmail.com"
+
+            if not subject or not body:
+                return {"error": "Missing subject or body"}, 400
+            
+            # Prepare the email
+            msg = Message(subject, sender=mail.default_sender, recipients=[recipient])
+            msg.body = body
+            
+            # Send the email
+            mail.send(msg)
+
+            return {"message": "Email sent successfully"}, 200
+        except Exception as e:
+            return {"error": str(e)}, 500
