@@ -141,7 +141,7 @@ class ApproveProvider(Resource):
         if new_status:
             user.role = 'admin'
         else:
-            user.role = 'user'
+            user.role = 'normal'
 
         try:
             # Commit the changes to the database
