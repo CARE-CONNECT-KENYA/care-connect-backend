@@ -1,10 +1,11 @@
 import re
+from flask_mail import Mail, Message
 from flask_restful import Resource,abort,reqparse
 from Server.Models.users import Users
 from Server.Models.providers import Providers,Review
 from datetime import datetime
 from flask import jsonify,request,make_response
-from app import db
+from app import db,mail
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.sql import func
 
@@ -14,6 +15,13 @@ class CountProviders(Resource):
     def get(self):
         providerCount = Providers.query.count()
         return {"Providers" : providerCount}, 200
+
+# this is a setup for sending emails
+def send_email(subject, body, recipient):
+    msg = Message(subject, sender=mail.default_sender, recipients=[recipient])
+    msg.body = body
+    mail.send(msg)
+
     
 class ViewALLProviders(Resource):
     @jwt_required()
@@ -208,6 +216,11 @@ class AddProvider(Resource):
 
             db.session.add(new_provider)
             db.session.commit()
+
+            # Send email notification to the provider
+            subject = "Provider Registration Successful"
+            body = f"Dear {providerName},\n\nYour registration as a provider has been successful."
+            send_email(subject, body, email)
             
             # Return response with providerID
             return {
