@@ -55,6 +55,93 @@ class ViewALLProviders(Resource):
 
         return make_response(jsonify({'providerlist': providersList}), 200)
  
+class GetDoctorProviders(Resource):
+    @jwt_required()
+    def get(self):
+        # Query to get approved providers
+        approvedProviders = Providers.query.filter(
+        Providers.status == True, 
+        Providers.providerType == 'Doctor'
+        ).order_by(Providers.created_at.desc()).all()
+        
+        # Initialize a dictionary to store provider ratings
+        provider_ratings = {}
+
+        # Query to calculate average rating for each provider
+        ratings = db.session.query(
+            Review.providerID,
+            func.avg(Review.rating).label('average_rating')
+        ).group_by(Review.providerID).all()
+
+        # Store ratings in a dictionary
+        for rating in ratings:
+            provider_ratings[rating.providerID] = rating.average_rating
+
+        # Construct the providers list with the additional rating
+        providersList = [{
+            "id": provider.providerID,
+            "status": provider.status,
+            "reg_date": provider.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            "user_id": provider.user_id,
+            "name": provider.providerName,
+            "bio": provider.bio,
+            "email": provider.email,
+            "number": provider.phoneNumber,
+            "workingHours": provider.workingHours,
+            "location": provider.location,
+            "profileImage": provider.profileImage,
+            "website": provider.website,
+            "services": provider.services,
+            "providerType": provider.providerType,
+            "rating": provider_ratings.get(provider.providerID, None)  # Add the rating here
+        } for provider in approvedProviders]
+
+        return make_response(jsonify({'Doctors': providersList}), 200)
+
+
+class GetFacilityProviders(Resource):
+    @jwt_required()
+    def get(self):
+        # Query to get approved providers
+        approvedProviders = Providers.query.filter(
+        Providers.status == True, 
+        Providers.providerType == 'Facility'
+        ).order_by(Providers.created_at.desc()).all()
+        
+        # Initialize a dictionary to store provider ratings
+        provider_ratings = {}
+
+        # Query to calculate average rating for each provider
+        ratings = db.session.query(
+            Review.providerID,
+            func.avg(Review.rating).label('average_rating')
+        ).group_by(Review.providerID).all()
+
+        # Store ratings in a dictionary
+        for rating in ratings:
+            provider_ratings[rating.providerID] = rating.average_rating
+
+        # Construct the providers list with the additional rating
+        providersList = [{
+            "id": provider.providerID,
+            "status": provider.status,
+            "reg_date": provider.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+            "user_id": provider.user_id,
+            "name": provider.providerName,
+            "bio": provider.bio,
+            "email": provider.email,
+            "number": provider.phoneNumber,
+            "workingHours": provider.workingHours,
+            "location": provider.location,
+            "profileImage": provider.profileImage,
+            "website": provider.website,
+            "services": provider.services,
+            "providerType": provider.providerType,
+            "rating": provider_ratings.get(provider.providerID, None)  # Add the rating here
+        } for provider in approvedProviders]
+
+        return make_response(jsonify({'Facilities': providersList}), 200)
+
 
 class AddProvider(Resource):
     @jwt_required()
