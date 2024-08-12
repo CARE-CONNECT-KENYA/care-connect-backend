@@ -72,14 +72,14 @@ class AddUser(Resource):
 
         try:
            # Send welcome email first
-            subject = "Welcome to Acare Connect – Your Gateway to Trusted Medical Professionals"
+            subject = "Welcome to Care Connect – Your Gateway to Trusted Medical Professionals"
             body = (
                 f"Hello {fullname},\n\n"
-                "Welcome to Acare Connect! We're thrilled to have you as part of our community. "
+                "Welcome to Care Connect! We're thrilled to have you as part of our community. "
                 "Whether you're searching for top-rated doctors, specialists, or medical facilities, "
                 "Acare Connect is here to make your healthcare journey seamless and stress-free.\n\n"
                 "If you have any questions or need assistance, our support team is always here to help. "
-                "Simply reply to this email or contact us at [support@acareconnect.com]."
+                "Simply reply to this email."
             )
             send_email(subject, body, email)
 

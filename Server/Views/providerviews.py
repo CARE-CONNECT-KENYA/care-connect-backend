@@ -217,11 +217,18 @@ class AddProvider(Resource):
             db.session.add(new_provider)
             db.session.commit()
 
-            # Send email notification to the provider
-            subject = "Provider Registration Successful"
-            body = f"Dear {providerName},\n\nYour registration as a provider has been successful."
+            # Send application submission email first
+            subject = "Your Provider Application Has Been Successfully Submitted"
+            body = (
+                    f"Dear {providerName},\n\n"
+                    "Thank you for applying to join Care Connect! We have successfully received your application, and it is now under review by our team.\n\n"
+                    "Once your application has been reviewed and approved, you'll be notified, and your profile will be available for users to view on our platform. We appreciate your patience during this process.\n\n"
+                    "If you have any questions or need further assistance, please don't hesitate to reach out to us .\n\n"
+                    "Thank you for choosing Care Connect. We're excited about the possibility of having you as part of our trusted network of healthcare providers!\n\n"
+                    "Best Regards,\n"
+                 
+                )
             send_email(subject, body, email)
-            
             # Return response with providerID
             return {
                 "message": f"{providerName} registered successfully.",
