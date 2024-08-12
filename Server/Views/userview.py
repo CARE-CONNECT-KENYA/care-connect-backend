@@ -21,6 +21,12 @@ class CountUsers(Resource):
         users_count = Users.query.count()
         return {"total users": users_count}, 200
     
+# this is a setup for sending emails
+def send_email(subject, body, recipient):
+    msg = Message(subject, sender=mail.default_sender, recipients=[recipient])
+    msg.body = body
+    mail.send(msg)
+    
 
 #  define user roles 
 def auth_role(role):
@@ -51,7 +57,7 @@ def user_lookup_callback(_jwt_header, jwt_data):
 class AddUser(Resource):
     def post(self):
         data = request.get_json()
-        
+
         if 'fullname' not in data or 'email' not in data or 'password' not in data:
             return {'message': 'Missing fullname, email, or password'}, 400
 
@@ -60,12 +66,24 @@ class AddUser(Resource):
         password = data.get('password')
         role = data.get('role', 'normal')
 
-                # Check if user already exists
+        # Check if user already exists
         if Users.query.filter_by(email=email).first():
             return {'message': 'User already exists'}, 400
 
         try:
-            # Validate the data using User model's validation methods
+           # Send welcome email first
+            subject = "Welcome to Care Connect – Your Gateway to Trusted Medical Professionals"
+            body = (
+                f"Hello {fullname},\n\n"
+                "Welcome to Care Connect! We're thrilled to have you as part of our community. "
+                "Whether you're searching for top-rated doctors, specialists, or medical facilities, "
+                "Acare Connect is here to make your healthcare journey seamless and stress-free.\n\n"
+                "If you have any questions or need assistance, our support team is always here to help. "
+                "Simply reply to this email."
+            )
+            send_email(subject, body, email)
+
+            # If email sending is successful, then validate and add the user
             user = Users(fullname=fullname, email=email, password=password, role=role)
             db.session.add(user)
             db.session.commit()
@@ -88,7 +106,11 @@ class AddUser(Resource):
         except Exception as e:
             print(f"Error adding user: {e}")
             db.session.rollback()
+            # If there's an error sending the email or adding the user, return an error response
+            if "Invalid email address" in str(e):
+                return {'error': 'Failed to send email. Email address is not valid.'}, 400
             return {'error': 'Failed to add user.'}, 500
+
 
 
 
@@ -158,14 +180,7 @@ class UserResourcesById(Resource):
             return {'message': 'User not found'}, 404
     
         
-    def delete(self, user_id):
-        user = Users.query.get(user_id)
-        if user:
-            db.session.delete(user)
-            db.session.commit()
-            return {"message": "User deleted successfully"}, 200
-        else:
-            return {"error": "User not found"}, 404
+
         
 
 class SendEmail(Resource):
