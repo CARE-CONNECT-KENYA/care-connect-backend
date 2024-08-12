@@ -71,10 +71,16 @@ class AddUser(Resource):
             return {'message': 'User already exists'}, 400
 
         try:
-            # Send welcome email first
-            subject = "Welcome to Care Connect – Your Gateway to Trusted Medical Professionals"
-            body = f"Hello {fullname},\n\nWelcome to Acare Connect! We're thrilled to have you as part of our community. Whether you're searching for top-rated doctors, specialists, or medical facilities, Acare Connect is here to make your healthcare journey seamless and stress-free.
-            If you have any questions or need assistance, our support team is always here to help. Simply reply to this email or contact us at"
+           # Send welcome email first
+            subject = "Welcome to Acare Connect – Your Gateway to Trusted Medical Professionals"
+            body = (
+                f"Hello {fullname},\n\n"
+                "Welcome to Acare Connect! We're thrilled to have you as part of our community. "
+                "Whether you're searching for top-rated doctors, specialists, or medical facilities, "
+                "Acare Connect is here to make your healthcare journey seamless and stress-free.\n\n"
+                "If you have any questions or need assistance, our support team is always here to help. "
+                "Simply reply to this email or contact us at [support@acareconnect.com]."
+            )
             send_email(subject, body, email)
 
             # If email sending is successful, then validate and add the user
