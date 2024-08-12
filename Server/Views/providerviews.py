@@ -227,7 +227,8 @@ class AddProvider(Resource):
                     "Thank you for choosing Care Connect. We're excited about the possibility of having you as part of our trusted network of healthcare providers!\n\n"
                     "Best Regards,\n"
                  
-                )
+                 )
+            
             send_email(subject, body, email)
             # Return response with providerID
             return {

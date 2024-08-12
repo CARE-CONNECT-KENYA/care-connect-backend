@@ -4,8 +4,9 @@ from flask import jsonify,request,make_response
 from Server.Models.providers import Providers
 from Server.Models.users import Users
 from datetime import datetime
-from app import db
+from app import db,mail
 from functools import wraps
+from flask_mail import Mail, Message
 
 def check_role(required_role):
     def wrapper(fn):
@@ -19,6 +20,12 @@ def check_role(required_role):
         return decorator
     return wrapper
 
+# this is a setup for sending emails
+def send_email(subject, body, recipient):
+    msg = Message(subject, sender=mail.default_sender, recipients=[recipient])
+    msg.body = body
+    mail.send(msg)
+    
 
 class UsersList(Resource):
     @jwt_required()
@@ -123,7 +130,7 @@ class UnpublishedProviders(Resource):
         } for provider in providers]
         
         return make_response(jsonify(notApprovedProviders), 200)
-    
+ 
 class ApproveProvider(Resource):
     @jwt_required()
     @check_role('super_admin')
@@ -136,7 +143,7 @@ class ApproveProvider(Resource):
         provider = Providers.query.filter_by(providerID=providerID).first()
 
         if not provider:
-            return make_response(jsonify({"message": "Provider not found"}), 404 )
+            return make_response(jsonify({"message": "Provider not found"}), 404)
 
         # Update the provider's status based on the new status
         provider.status = new_status
@@ -156,11 +163,35 @@ class ApproveProvider(Resource):
         try:
             # Commit the changes to the database
             db.session.commit()
-            return make_response(jsonify({"message": "Provider status and user role updated successfully"}), 200 )
+
+            # Send an email notification to the provider
+            self.send_email_notification(provider, new_status)
+
+            return make_response(jsonify({"message": "Provider status and user role updated successfully"}), 200)
         except Exception as e:
             # Rollback in case of error
             db.session.rollback()
-            return make_response(jsonify({"message": "An error occurred", "error": str(e)}), 500 )
+            return make_response(jsonify({"message": "An error occurred", "error": str(e)}), 500)
+
+    def send_email_notification(self, provider, new_status):
+        # Customize the email subject and body based on the provider's status
+        if new_status:
+            subject = "Approval Notification: You Have Been Approved!"
+            body = f"Dear {provider.providerName},\n\nWe are pleased to inform you that your provider account has been approved. You can now access your dashboard with full privileges.\n\nBest regards,\nYour Company"
+        else:
+            subject = "Status Update: Your Provider Account"
+            body = f"Dear {provider.providerName},\n\nYour provider account status has been updated. Please contact us if you have any questions.\n\nBest regards,\nYour Company"
+
+        # Debugging: Print email details to ensure correct information
+        print(f"Sending email to {provider.email} with subject '{subject}'")
+
+        try:
+            # Use the provided send_email function to send the email
+            send_email(subject, body, provider.email)
+            print("Email sent successfully")
+        except Exception as e:
+            print(f"Failed to send email: {e}")
+
 
 
 
