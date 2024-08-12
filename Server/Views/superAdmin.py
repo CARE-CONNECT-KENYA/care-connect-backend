@@ -58,6 +58,16 @@ class UpdateUserrole(Resource):
             return make_response(jsonify({"message": "User role updated successfully"}), 200)
         else:
             return make_response(jsonify({"error": "Invalid role"}), 400)
+        
+    @check_role('super_admin')    
+    def delete(self, user_id):
+        user = Users.query.get(user_id)
+        if user:
+            db.session.delete(user)
+            db.session.commit()
+            return {"message": "User deleted successfully"}, 200
+        else:
+            return {"error": "User not found"}, 404
 
     
 class ProvidersList(Resource):

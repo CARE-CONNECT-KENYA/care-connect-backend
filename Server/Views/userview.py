@@ -158,14 +158,7 @@ class UserResourcesById(Resource):
             return {'message': 'User not found'}, 404
     
         
-    def delete(self, user_id):
-        user = Users.query.get(user_id)
-        if user:
-            db.session.delete(user)
-            db.session.commit()
-            return {"message": "User deleted successfully"}, 200
-        else:
-            return {"error": "User not found"}, 404
+
         
 
 class SendEmail(Resource):
