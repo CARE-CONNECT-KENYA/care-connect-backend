@@ -8,6 +8,7 @@ from flask import jsonify,request,make_response
 from app import db,mail
 from flask_jwt_extended import jwt_required, get_jwt_identity
 from sqlalchemy.sql import func
+from Server.Models.IndividualDoctors import IndividualDoctors
 
 
 #count tester
@@ -68,8 +69,8 @@ class GetDoctorProviders(Resource):
     def get(self):
         # Query to get approved providers
         approvedProviders = Providers.query.filter(
-        Providers.status == True, 
-        Providers.providerType == 'Doctor'
+            Providers.status == True, 
+            Providers.providerType == 'Doctor'
         ).order_by(Providers.created_at.desc()).all()
         
         # Initialize a dictionary to store provider ratings
@@ -85,24 +86,31 @@ class GetDoctorProviders(Resource):
         for rating in ratings:
             provider_ratings[rating.providerID] = rating.average_rating
 
-        # Construct the providers list with the additional rating
-        providersList = [{
-            "id": provider.providerID,
-            "status": provider.status,
-            "reg_date": provider.created_at.strftime('%Y-%m-%d %H:%M:%S'),
-            "user_id": provider.user_id,
-            "name": provider.providerName,
-            "bio": provider.bio,
-            "email": provider.email,
-            "number": provider.phoneNumber,
-            "workingHours": provider.workingHours,
-            "location": provider.location,
-            "profileImage": provider.profileImage,
-            "website": provider.website,
-            "services": provider.services,
-            "providerType": provider.providerType,
-            "rating": provider_ratings.get(provider.providerID, None)  # Add the rating here
-        } for provider in approvedProviders]
+        # Construct the providers list with the additional rating and gender
+        providersList = []
+        for provider in approvedProviders:
+            # Fetch the corresponding doctor details
+            doctor = IndividualDoctors.query.filter_by(providerID=provider.providerID).first()
+            gender = doctor.Gender if doctor else None
+            
+            providersList.append({
+                "id": provider.providerID,
+                "status": provider.status,
+                "reg_date": provider.created_at.strftime('%Y-%m-%d %H:%M:%S'),
+                "user_id": provider.user_id,
+                "name": provider.providerName,
+                "bio": provider.bio,
+                "email": provider.email,
+                "number": provider.phoneNumber,
+                "workingHours": provider.workingHours,
+                "location": provider.location,
+                "profileImage": provider.profileImage,
+                "website": provider.website,
+                "services": provider.services,
+                "providerType": provider.providerType,
+                "gender": gender,  # Add the gender here
+                "rating": provider_ratings.get(provider.providerID, None)  # Add the rating here
+            })
 
         return make_response(jsonify({'Doctors': providersList}), 200)
 
