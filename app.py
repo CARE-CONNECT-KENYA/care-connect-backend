@@ -1,24 +1,25 @@
 import os
-from flask import Flask,jsonify
+from flask import Flask
 from flask_sqlalchemy import SQLAlchemy
 from flask_migrate import Migrate
-from  flask_cors import CORS
+from flask_cors import CORS
 from flask_jwt_extended import JWTManager
-from flask_mail import Mail, Message
+from flask_mail import Mail
+from dotenv import load_dotenv
 
-
+load_dotenv()  # Load environment variables from .env
 
 app = Flask(__name__)
 
-app.config['MAIL_SERVER'] = 'smtp.gmail.com'
-app.config['MAIL_PORT'] = 465
-app.config['MAIL_USERNAME'] = 'careconnect621@gmail.com'
-app.config['MAIL_PASSWORD'] = 'uqbv mjgp vfgk wyww'
-app.config['MAIL_USE_SSL'] = True
-app.config['MAIL_USE_TLS'] = False
-app.config['MAIL_DEFAULT_SENDER'] = 'careconnect621@gmail.com'
+# Mail configuration from environment variables
+app.config['MAIL_SERVER'] = os.getenv('MAIL_SERVER')
+app.config['MAIL_PORT'] = int(os.getenv('MAIL_PORT', 465))
+app.config['MAIL_USERNAME'] = os.getenv('MAIL_USERNAME')
+app.config['MAIL_PASSWORD'] = os.getenv('MAIL_PASSWORD')
+app.config['MAIL_USE_SSL'] = os.getenv('MAIL_USE_SSL', 'True').lower() == 'true'
+app.config['MAIL_USE_TLS'] = os.getenv('MAIL_USE_TLS', 'False').lower() == 'true'
+app.config['MAIL_DEFAULT_SENDER'] = os.getenv('MAIL_DEFAULT_SENDER')
 mail = Mail(app)
-
 
 CORS(app)
 db = SQLAlchemy()
@@ -37,31 +38,23 @@ def initalize_views():
 def create_app(config_name):
     app.config.from_object(config_name)
 
-    app.config["SQLALCHEMY_DATABASE_URI"] = 'sqlite:///app.db'
-    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = False
-    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = 86000
+    app.config["SQLALCHEMY_DATABASE_URI"] = os.getenv('SQLALCHEMY_DATABASE_URI')
+    app.config["SQLALCHEMY_TRACK_MODIFICATIONS"] = os.getenv('SQLALCHEMY_TRACK_MODIFICATIONS', 'False').lower() == 'true'
+    app.config['JWT_ACCESS_TOKEN_EXPIRES'] = int(os.getenv('JWT_ACCESS_TOKEN_EXPIRES', 86000))
 
-    #jwt configurations
-    app.config['JWT_SECRET_KEY'] = 'careconnect@dev-inshi'
+    # JWT configurations
+    app.config['JWT_SECRET_KEY'] = os.getenv('JWT_SECRET_KEY')
     app.config['PROPAGATE_EXCEPTIONS'] = True
 
-
-    # when using mysql
-    ###  app.config["SQLALCHEMY_DATABASE_URI"] = 'mysql+mysqlconnector://erick:Erick%40123@localhost/your_db_name' 
-
-    #initializing the db with app
+    # Initialize the DB with the app
     db.init_app(app)
-    # Initialize Flask-Migrate
-    migrate = Migrate(app,db)
+    migrate = Migrate(app, db)
     jwt.init_app(app)
 
-    #create database schemas
+    # Create database schemas
     with app.app_context():
         initialize_models()
 
     initalize_views()
 
     return app
-
-
-

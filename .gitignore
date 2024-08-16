@@ -1,5 +1,6 @@
 # Ignore instances directory
 instance/
+.env
 
 # Ignore migrations directory
 migrations/
